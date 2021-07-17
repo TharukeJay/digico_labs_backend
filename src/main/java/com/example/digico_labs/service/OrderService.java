@@ -7,6 +7,7 @@ import com.example.digico_labs.repository.model.user.AuthenticationUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -41,9 +42,12 @@ public class OrderService {
         Orders orderData = new Orders();
         orderData.setPackageData(orderCreateRequest.getPackageData());
         orderData.setTotal(orderCreateRequest.getTotal());
+        orderData.setCreatedOn(LocalDate.now());
         authenticationUser.getOrderList().add(orderData);
 
         authenticationUserRepository.save(authenticationUser);
-//        emailService.sendMail(authenticationUser.getEmail(), "Order summery", "");
+
+        String body = "<p><h2>Order details</h2></p><p>Order place date :"  + orderData.getCreatedOn() +"</p><p>Order Total :" + orderData.getTotal() + "</p>";
+        emailService.sendMail(authenticationUser.getEmail(), "Order summery", body);
     }
 }

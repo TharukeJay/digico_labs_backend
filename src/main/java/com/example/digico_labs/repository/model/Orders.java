@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Setter
@@ -11,6 +12,7 @@ import java.util.List;
 @ToString
 public class Orders {
     private List<PackageData> packageData;
+    private LocalDate createdOn;
     private String total;
 
     @Setter
