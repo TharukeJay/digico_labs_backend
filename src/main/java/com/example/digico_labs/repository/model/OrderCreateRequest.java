@@ -12,5 +12,5 @@ import java.util.List;
 @ToString
 public class OrderCreateRequest {
 
-    List<Orders> orderList;
+    Orders order;
 }

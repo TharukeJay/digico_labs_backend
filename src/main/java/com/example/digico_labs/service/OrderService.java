@@ -14,12 +14,14 @@ import java.util.List;
 public class OrderService {
 
     private final AuthenticationUserRepository authenticationUserRepository;
+    private EmailService emailService;
 
-    public OrderService(AuthenticationUserRepository authenticationUserRepository) {
+    public OrderService(AuthenticationUserRepository authenticationUserRepository, EmailService emailService) {
         this.authenticationUserRepository = authenticationUserRepository;
+        this.emailService = emailService;
     }
 
-    public List<Orders> getOders(String userId) {
+    public List<Orders> getOrders(String userId) {
         AuthenticationUser authenticationUser = fetchUserById(userId);
         List<Orders> orderData = authenticationUser.getOrderList();
         return orderData;
@@ -33,16 +35,15 @@ public class OrderService {
         });
     }
 
-    public void createNewOrder(String userId, OrderCreateRequest orderCreateRequest) {
+    public void createNewOrder(String userId, Orders orderCreateRequest) throws Exception {
         AuthenticationUser authenticationUser = fetchUserById(userId);
+        log.info("Setting up the order");
         Orders orderData = new Orders();
-        for (Orders orders: orderCreateRequest.getOrderList()) {
-            orderData.setPackageType(orders.getPackageType());
-            orderData.setQty(orders.getQty());
-            orderData.setSubTotal(orders.getSubTotal());
-            orderData.setTotal(orders.getTotal());
-            authenticationUser.getOrderList().add(orderData);
-        }
+        orderData.setPackageData(orderCreateRequest.getPackageData());
+        orderData.setTotal(orderCreateRequest.getTotal());
+        authenticationUser.getOrderList().add(orderData);
+
         authenticationUserRepository.save(authenticationUser);
+//        emailService.sendMail(authenticationUser.getEmail(), "Order summery", "");
     }
 }
